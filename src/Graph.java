@@ -9,9 +9,9 @@ public class Graph {
     this.troncons = troncons;
   }
 
-  public void calculerCheminMinimisantNombreTroncons(String arret, String arret2) {
+  public void calculerCheminMinimisantNombreTroncons(String stationDepart, String stationArrive) {
   }
 
-  public void calculerCheminMinimisantTempsTransport(String arret, String arret2) {
+  public void calculerCheminMinimisantTempsTransport(String stationDepart, String stationArrive) {
   }
 }
