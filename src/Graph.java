@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Graph {
@@ -9,7 +10,7 @@ public class Graph {
   private File lignes;
   private File troncons;
   private ArrayList<Ligne> listeLignes;
-  private HashMap<Integer, ArrayList<Troncon>> mapTroncons;
+  private HashMap<String, ArrayList<Troncon>> mapTroncons;
 
   public Graph(File lignes, File troncons) {
     this.lignes = lignes;
@@ -44,7 +45,7 @@ public class Graph {
       while (scanner.hasNextLine()) {
         String ligne = scanner.nextLine();
         String[] elements = ligne.split(",");
-        int numeroLigne = Integer.parseInt(elements[0]);
+        String numeroLigne = elements[0];
         String depart = elements[1];
         String arrivee = elements[2];
         int duree = Integer.parseInt(elements[3]);
