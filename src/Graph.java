@@ -26,7 +26,7 @@ public class Graph {
         String ligne = scanner.nextLine();
         String[] elements = ligne.split(",");
         int id = Integer.parseInt(elements[0]);
-        int numero = Integer.parseInt(elements[1]);
+        String numero = elements[1];
         String premiereStation = elements[2];
         String destination = elements[3];
         String typeTransport = elements[4];
