@@ -1,16 +1,17 @@
 public class Troncon {
-  private String numeroLigne;
+  private int numeroLigne;
   private String depart;
   private String arrivee;
   private int duree;
 
-  public Troncon(String depart, String arrivee, int duree) {
+  public Troncon(int numeroLigne, String depart, String arrivee, int duree) {
+    this.numeroLigne = numeroLigne;
     this.depart = depart;
     this.arrivee = arrivee;
     this.duree = duree;
   }
 
-  public String getNumeroLigne() {
+  public int getNumeroLigne() {
     return numeroLigne;
   }
 
