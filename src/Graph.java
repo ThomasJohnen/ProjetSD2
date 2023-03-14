@@ -2,8 +2,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
@@ -111,6 +113,69 @@ public class Graph {
   }
 
   public void calculerCheminMinimisantTempsTransport(String stationDepart, String stationArrive) {
-    // à implémenter
+    // Initialisation
+    Map<String, Integer> tempsMin = new HashMap<>();
+    Map<String, Troncon> sommetPrecedent = new HashMap<>();
+    Set<String> sommetsNonVisites = new HashSet<>();
+    for (Map.Entry<String, ArrayList<Troncon>> entry : mapTroncons.entrySet()) {
+      String sommet = entry.getKey();
+      tempsMin.put(sommet, Integer.MAX_VALUE);
+      sommetPrecedent.put(sommet, null);
+      sommetsNonVisites.add(sommet);
+    }
+    tempsMin.put(stationDepart, 0);
+
+    while (!sommetsNonVisites.isEmpty()) {
+      // Cherche le sommet non visité avec le temps min
+      String sommetActuel = null;
+      int tempsMinActuel = Integer.MAX_VALUE;
+      for (String sommet : sommetsNonVisites) {
+        if (tempsMin.get(sommet) < tempsMinActuel) {
+          sommetActuel = sommet;
+          tempsMinActuel = tempsMin.get(sommet);
+        }
+      }
+      if (sommetActuel == null) {
+        break; // Plus de sommets atteignables
+      }
+
+      // Met à jour les temps min des sommets voisins
+      sommetsNonVisites.remove(sommetActuel);
+      for (Troncon troncon : mapTroncons.get(sommetActuel)) {
+        String sommetVoisin = troncon.getArrivee();
+        int tempsVoisin = tempsMinActuel + troncon.getDuree();
+
+        if (tempsVoisin < tempsMin.get(sommetVoisin)) {
+          tempsMin.put(sommetVoisin, tempsVoisin);
+          sommetPrecedent.put(sommetVoisin, troncon);
+        }
+      }
+    }
+
+    // Retrouve le chemin
+    List<Troncon> chemin = new ArrayList<>();
+    Troncon tronconActuel = sommetPrecedent.get(stationArrive);
+    while (tronconActuel != null) {
+      chemin.add(tronconActuel);
+      tronconActuel = sommetPrecedent.get(tronconActuel.getDepart());
+    }
+
+    // Affiche le chemin
+    int tempsTotal = tempsMin.get(stationArrive);
+    System.out.println("Temps total : " + tempsTotal);
+    Collections.reverse(chemin);
+    for (Troncon troncon : chemin) {
+      int numeroLigne = troncon.getNumeroLigne();
+      Ligne ligne = null;
+      for (Ligne l : listeLignes) {
+        if (l.getId() == numeroLigne) {
+          ligne = l;
+          break;
+        }
+      }
+      System.out.println("Ligne " + ligne.getNumero() + " : " +
+          troncon.getDepart() + " -> " + troncon.getArrivee() +
+          " (" + troncon.getDuree() + " min)");
+    }
   }
 }
