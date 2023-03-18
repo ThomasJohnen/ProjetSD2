@@ -4,7 +4,7 @@ public class Troncon {
   private String arrivee;
   private int duree;
 
-  public Troncon(String depart, String arrivee, int duree) {
+  public Troncon(int numeroLigne, String depart, String arrivee, int duree) {
     this.numeroLigne = numeroLigne;
     this.depart = depart;
     this.arrivee = arrivee;
