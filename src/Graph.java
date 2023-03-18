@@ -4,10 +4,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-<<<<<<< HEAD
-=======
 import java.util.Map;
->>>>>>> 999f8520b2f95980116fd476eb944508df1e61e2
 import java.util.Scanner;
 import java.util.Set;
 
@@ -71,16 +68,6 @@ public class Graph {
   }
 
   public void calculerCheminMinimisantNombreTroncons(String stationDepart, String stationArrive) {
-<<<<<<< HEAD
-
-     ArrayDeque<String> station = new ArrayDeque<>();
-     HashSet<String> stationsVisitees = new HashSet<>();
-     HashMap<String, String> troncons = new HashMap<>();
-
-     stationsVisitees.add(stationDepart);
-
-    
-=======
     String stationActuelle = stationDepart;
     // liste des sommets
     ArrayDeque<String> file = new ArrayDeque<>();
@@ -121,7 +108,6 @@ public class Graph {
           ", attente moyenne=" + ligne.getTempsAttenteMoyen() + "]]");
       stationSearch = test.getDepart();
     }
->>>>>>> 999f8520b2f95980116fd476eb944508df1e61e2
   }
 
   public void calculerCheminMinimisantTempsTransport(String stationDepart, String stationArrive) {
