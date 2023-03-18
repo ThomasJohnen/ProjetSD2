@@ -1,7 +1,9 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Scanner;
 
 public class Graph {
@@ -63,7 +65,14 @@ public class Graph {
   }
 
   public void calculerCheminMinimisantNombreTroncons(String stationDepart, String stationArrive) {
-    // à implémenter
+
+     ArrayDeque<String> station = new ArrayDeque<>();
+     HashSet<String> stationsVisitees = new HashSet<>();
+     HashMap<String, String> troncons = new HashMap<>();
+
+     stationsVisitees.add(stationDepart);
+
+    
   }
 
   public void calculerCheminMinimisantTempsTransport(String stationDepart, String stationArrive) {
