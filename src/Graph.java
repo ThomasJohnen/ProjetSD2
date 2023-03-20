@@ -93,14 +93,21 @@ public class Graph {
       }
     }
 
-    Troncon troncon;
-    String stationSearch = stationArrive;
+    // Retrouve le chemin
+    List<Troncon> chemin = new ArrayList<>();
+    Troncon tronconActuel = sommetPrecedent.get(stationArrive);
+    while (tronconActuel != null) {
+      chemin.add(tronconActuel);
+      tronconActuel = sommetPrecedent.get(tronconActuel.getDepart());
+    }
+
+    Collections.reverse(chemin);
+    int nbTroncons = 0;
     Ligne ligne = null;
     int dureeTransport = 0;
     int dureeTotale = 0;
     int numeroLigne = 0;
-    while (!stationSearch.equals(stationDepart)){
-      troncon = sommetPrecedent.get(stationSearch);
+    for (Troncon troncon : chemin) {
       System.out.print("Troncon" + " [" + "départ=" + troncon.getDepart() + ", arrivée=" + troncon.getArrivee()
           + ", durée=" + troncon.getDuree() + ", ligne=Ligne " + "[");
       dureeTransport += troncon.getDuree();
@@ -113,15 +120,28 @@ public class Graph {
       System.out.println("id=" +ligne.getId() +", nom=" + ligne.getNumero() +
           ", source=" + ligne.getPremiereStation() + ", destination=" + ligne.getDestination() + ", type=" + ligne.getTypeTransport() +
           ", attente moyenne=" + ligne.getTempsAttenteMoyen() + "]]");
-      stationSearch = troncon.getDepart();
 
       if (numeroLigne != ligne.getId()){
         numeroLigne = ligne.getId();
         dureeTotale += ligne.getTempsAttenteMoyen();
       }
+      nbTroncons += 1;
     }
+
+    System.out.println("Nombre de troncons=" + nbTroncons);
     dureeTotale += dureeTransport;
     System.out.println("dureeTransport=" + dureeTransport + " dureeTotale=" + dureeTotale );
+
+
+    Ligne ligne2 = null;
+    for (Troncon troncon : chemin) {
+      for (int i = 0; i < listeLignes.size(); i++) {
+        if (listeLignes.get(i).getId() == troncon.getNumeroLigne()){
+          ligne2 = listeLignes.get(i);
+        }
+      }
+      System.out.println("Deplacement [" + "ligne=" + ligne2.getNumero() + ", arrivee=" +  );
+    }
   }
 
   public void calculerCheminMinimisantTempsTransport(String stationDepart, String stationArrive) {
@@ -177,24 +197,38 @@ public class Graph {
     }
 
     // Affiche le chemin
-    int tempsTotal = tempsMin.get(stationArrive);
-    System.out.println("Temps total : " + tempsTotal);
+    int nbTroncons = 0;
+    Ligne ligne = null;
+    int dureeTransport = tempsMin.get(stationArrive);
+    int dureeTotale = 0;
+    int numeroLigne = 0;
     Collections.reverse(chemin);
     for (Troncon troncon : chemin) {
-      int numeroLigne = troncon.getNumeroLigne();
-      Ligne ligne = null;
-      for (Ligne l : listeLignes) {
-        if (l.getId() == numeroLigne) {
-          ligne = l;
-          break;
+      System.out.print("Troncon" + " [" + "départ=" + troncon.getDepart() + ", arrivée=" + troncon.getArrivee()
+          + ", durée=" + troncon.getDuree() + ", ligne=Ligne " + "[");
+
+      for (int i = 0; i < listeLignes.size(); i++) {
+        if (listeLignes.get(i).getId() == troncon.getNumeroLigne()){
+          ligne = listeLignes.get(i);
         }
       }
-      System.out.println("Ligne " + ligne.getNumero() + " : " +
-          troncon.getDepart() + " -> " + troncon.getArrivee() +
-          " (" + troncon.getDuree() + " min)");
-    }
-  }
+      System.out.println("id=" +ligne.getId() +", nom=" + ligne.getNumero() +
+          ", source=" + ligne.getPremiereStation() + ", destination=" + ligne.getDestination() + ", type=" + ligne.getTypeTransport() +
+          ", attente moyenne=" + ligne.getTempsAttenteMoyen() + "]]");
 
+      if (numeroLigne != ligne.getId()){
+        numeroLigne = ligne.getId();
+        dureeTotale += ligne.getTempsAttenteMoyen();
+      }
+      nbTroncons += 1;
+    }
+    dureeTotale += dureeTransport;
+    System.out.println("Nombre de troncons=" + nbTroncons);
+    System.out.println("dureeTransport=" + dureeTransport + " dureeTotale=" + dureeTotale);
+
+
+
+  }
 
 
 }
