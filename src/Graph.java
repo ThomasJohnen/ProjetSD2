@@ -96,10 +96,14 @@ public class Graph {
     Troncon troncon;
     String stationSearch = stationArrive;
     Ligne ligne = null;
+    int dureeTransport = 0;
+    int dureeTotale = 0;
+    int numeroLigne = 0;
     while (!stationSearch.equals(stationDepart)){
       troncon = sommetPrecedent.get(stationSearch);
       System.out.print("Troncon" + " [" + "départ=" + troncon.getDepart() + ", arrivée=" + troncon.getArrivee()
           + ", durée=" + troncon.getDuree() + ", ligne=Ligne " + "[");
+      dureeTransport += troncon.getDuree();
 
       for (int i = 0; i < listeLignes.size(); i++) {
         if (listeLignes.get(i).getId() == troncon.getNumeroLigne()){
@@ -110,7 +114,14 @@ public class Graph {
           ", source=" + ligne.getPremiereStation() + ", destination=" + ligne.getDestination() + ", type=" + ligne.getTypeTransport() +
           ", attente moyenne=" + ligne.getTempsAttenteMoyen() + "]]");
       stationSearch = troncon.getDepart();
+
+      if (numeroLigne != ligne.getId()){
+        numeroLigne = ligne.getId();
+        dureeTotale += ligne.getTempsAttenteMoyen();
+      }
     }
+    dureeTotale += dureeTransport;
+    System.out.println("dureeTransport=" + dureeTransport + " dureeTotale=" + dureeTotale );
   }
 
   public void calculerCheminMinimisantTempsTransport(String stationDepart, String stationArrive) {
