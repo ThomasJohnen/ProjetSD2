@@ -130,28 +130,6 @@ public class Graph {
     System.out.println("Nombre de troncons=" + nbTroncons);
     dureeTotale += dureeTransport;
     System.out.println("dureeTransport=" + dureeTransport + " dureeTotale=" + dureeTotale );
-    /*
-    Ligne ligne2 = null;
-    String numLigne = "";
-    String arrivee = "";
-    for (Troncon troncon : chemin) {
-      for (int i = 0; i < listeLignes.size(); i++) {
-        if (listeLignes.get(i).getId() == troncon.getNumeroLigne()){
-          ligne2 = listeLignes.get(i);
-        }
-      }
-
-      if (!numLigne.equals(ligne2.getNumero())){
-        numLigne = ligne2.getNumero();
-        System.out.print("Deplacement [" + "ligne=" + ligne2.getNumero() + ", Depart=" + troncon.getDepart());
-        for (Troncon troncon1 : chemin) {
-
-          if (troncon1.getDepart().equals(troncon.getArrivee())){
-            System.out.println(", arrivee=" + troncon.getArrivee());
-          }
-        }
-      }
-    }*/
   }
 
   public void calculerCheminMinimisantTempsTransport(String stationDepart, String stationArrive) {
