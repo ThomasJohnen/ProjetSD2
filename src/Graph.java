@@ -2,8 +2,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
@@ -90,27 +93,143 @@ public class Graph {
       }
     }
 
-    Troncon test;
-    String stationSearch = stationArrive;
+    List<Troncon> chemin = new ArrayList<>();
+    Troncon tronconActuel = sommetPrecedent.get(stationArrive);
+    while (tronconActuel != null) {
+      chemin.add(tronconActuel);
+      tronconActuel = sommetPrecedent.get(tronconActuel.getDepart());
+    }
+
+    Collections.reverse(chemin);
+    int nbTroncons = 0;
     Ligne ligne = null;
-    while (!stationSearch.equals(stationDepart)){
-      test = sommetPrecedent.get(stationSearch);
-      System.out.print("Troncon" + " [" + "départ=" + test.getDepart() + ", arrivée=" + test.getArrivee()
-          + ", durée=" + test.getDuree() + ", ligne=Ligne " + "[");
+    int dureeTransport = 0;
+    int dureeTotale = 0;
+    String numeroLigne = "";
+    for (Troncon troncon : chemin) {
+      System.out.print("Troncon" + " [" + "départ=" + troncon.getDepart() + ", arrivée=" + troncon.getArrivee()
+          + ", durée=" + troncon.getDuree() + ", ligne=Ligne " + "[");
+      dureeTransport += troncon.getDuree();
 
       for (int i = 0; i < listeLignes.size(); i++) {
-        if (listeLignes.get(i).getId() == test.getNumeroLigne()){
+        if (listeLignes.get(i).getId() == troncon.getNumeroLigne()){
           ligne = listeLignes.get(i);
         }
       }
       System.out.println("id=" +ligne.getId() +", nom=" + ligne.getNumero() +
           ", source=" + ligne.getPremiereStation() + ", destination=" + ligne.getDestination() + ", type=" + ligne.getTypeTransport() +
           ", attente moyenne=" + ligne.getTempsAttenteMoyen() + "]]");
-      stationSearch = test.getDepart();
+
+      if (!numeroLigne.equals(ligne.getNumero())){
+        numeroLigne = ligne.getNumero();
+        dureeTotale += ligne.getTempsAttenteMoyen();
+      }
+      nbTroncons += 1;
     }
+
+    System.out.println("Nombre de troncons=" + nbTroncons);
+    dureeTotale += dureeTransport;
+    System.out.println("dureeTransport=" + dureeTransport + " dureeTotale=" + dureeTotale );
+    /*
+    Ligne ligne2 = null;
+    String numLigne = "";
+    String arrivee = "";
+    for (Troncon troncon : chemin) {
+      for (int i = 0; i < listeLignes.size(); i++) {
+        if (listeLignes.get(i).getId() == troncon.getNumeroLigne()){
+          ligne2 = listeLignes.get(i);
+        }
+      }
+
+      if (!numLigne.equals(ligne2.getNumero())){
+        numLigne = ligne2.getNumero();
+        System.out.print("Deplacement [" + "ligne=" + ligne2.getNumero() + ", Depart=" + troncon.getDepart());
+        for (Troncon troncon1 : chemin) {
+
+          if (troncon1.getDepart().equals(troncon.getArrivee())){
+            System.out.println(", arrivee=" + troncon.getArrivee());
+          }
+        }
+      }
+    }*/
   }
 
   public void calculerCheminMinimisantTempsTransport(String stationDepart, String stationArrive) {
-    // à implémenter
+    // Initialisation
+    Map<String, Integer> tempsMin = new HashMap<>();
+    Map<String, Troncon> sommetPrecedent = new HashMap<>();
+    Set<String> sommetsNonVisites = new HashSet<>();
+
+    for (String sommet : mapTroncons.keySet()) {
+      tempsMin.put(sommet, Integer.MAX_VALUE);
+      sommetPrecedent.put(sommet, null);
+      sommetsNonVisites.add(sommet);
+    }
+    tempsMin.put(stationDepart, 0);
+
+    while (!sommetsNonVisites.isEmpty()) {
+      String sommetActuel = null;
+      int tempsMinActuel = Integer.MAX_VALUE;
+
+      for (String sommet : sommetsNonVisites) {
+        int temps = tempsMin.get(sommet);
+        if (temps < tempsMinActuel) {
+          sommetActuel = sommet;
+          tempsMinActuel = temps;
+        }
+      }
+      if (sommetActuel == null) {
+        break;
+      }
+
+      sommetsNonVisites.remove(sommetActuel);
+      ArrayList<Troncon> troncons = mapTroncons.get(sommetActuel);
+      for (int i = 0; i < troncons.size(); i++) {
+        Troncon troncon = troncons.get(i);
+        String sommetVoisin = troncon.getArrivee();
+        int tempsVoisin = tempsMinActuel + troncon.getDuree();
+
+        if (tempsVoisin < tempsMin.get(sommetVoisin)) {
+          tempsMin.put(sommetVoisin, tempsVoisin);
+          sommetPrecedent.put(sommetVoisin, troncon);
+        }
+      }
+    }
+
+    List<Troncon> chemin = new ArrayList<>();
+    Troncon tronconActuel = sommetPrecedent.get(stationArrive);
+    while (tronconActuel != null) {
+      chemin.add(tronconActuel);
+      tronconActuel = sommetPrecedent.get(tronconActuel.getDepart());
+    }
+
+    int nbTroncons = 0;
+    Ligne ligne = null;
+    int dureeTransport = tempsMin.get(stationArrive);
+    int dureeTotale = 0;
+    int numeroLigne = 0;
+    Collections.reverse(chemin);
+    for (Troncon troncon : chemin) {
+      System.out.print("Troncon" + " [" + "départ=" + troncon.getDepart() + ", arrivée=" + troncon.getArrivee()
+          + ", durée=" + troncon.getDuree() + ", ligne=Ligne " + "[");
+
+      for (int i = 0; i < listeLignes.size(); i++) {
+        if (listeLignes.get(i).getId() == troncon.getNumeroLigne()){
+          ligne = listeLignes.get(i);
+        }
+      }
+      System.out.println("id=" +ligne.getId() +", nom=" + ligne.getNumero() +
+          ", source=" + ligne.getPremiereStation() + ", destination=" + ligne.getDestination() + ", type=" + ligne.getTypeTransport() +
+          ", attente moyenne=" + ligne.getTempsAttenteMoyen() + "]]");
+
+      if (numeroLigne != ligne.getId()){
+        numeroLigne = ligne.getId();
+        dureeTotale += ligne.getTempsAttenteMoyen();
+      }
+      nbTroncons += 1;
+    }
+    dureeTotale += dureeTransport;
+    System.out.println("Nombre de troncons=" + nbTroncons);
+    System.out.println("dureeTransport=" + dureeTransport + " dureeTotale=" + dureeTotale);
   }
 }
